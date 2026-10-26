@@ -172,7 +172,7 @@ def tools_menu() -> None:
         print(f"Hasil = {mc.mod_pow(a, e, m, log)}")
         show(log)
     elif choice == "4":
-        n = int(ask("Masukkan bilangan: "))
+        n = int(ask("Masukkan bilangan: "))  
         log = []
         print("Status: " + ("kemungkinan prima" if mc.is_probable_prime(n, log) else "komposit"))
         show(log)
@@ -180,7 +180,7 @@ def tools_menu() -> None:
         raise ValueError("Pilihan alat tidak dikenal.")
 
 
-# Menjalankan contoh deterministik untuk presentasi dan pemeriksaan.
+# Menjalankan contoh deterministik untuk presentasi dan pemeriksaan
 def demo() -> None:
     key = rsa.make_key(43, 59, 13)
     print("=== PEMBUATAN KUNCI ===")
