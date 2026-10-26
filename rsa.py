@@ -127,12 +127,12 @@ def decrypt_blocks(blocks: list[int], d: int, n: int, log: list | None = None) -
     return [mod_pow(c, d, n, log) for c in blocks]
 
 
-# tanda tangan versi kuliah: S = x^d mod n dengan kunci privat (tanpa hash)
+# tanda tangan versi kuliah : S = x^d mod n dengan kunci privat (tanpa hash)
 def sign_blocks(blocks: list[int], d: int, n: int) -> list[int]:
     return decrypt_blocks(blocks, d, n)
 
 
-# verifikasi tanda tangan: x = S^e mod n dengan kunci publik
+# verifikasi tanda tangan : x = S^e mod n dengan kunci publik
 def verify_blocks(blocks: list[int], e: int, n: int) -> list[int]:
     return encrypt_blocks(blocks, e, n)
 
@@ -145,7 +145,7 @@ def encrypt_text(text: str, pub: tuple[int, int],
     return plain, width, encrypt_blocks(plain, e, n, log)
 
 
-# mendekripsi blok ciphertext lalu mengubahnya kembali menjadi teks
+# mendekripsi blok ciphertext, lalu mengubahnya kembali menjadi teks
 def decrypt_text(blocks: list[int], key: RSAKey, log: list | None = None) -> str:
     plain = decrypt_blocks(blocks, key.d, key.n, log)
     return rosen_decode(plain, rosen_block_digits(key.n))
@@ -158,7 +158,7 @@ def format_blocks(blocks: list[int], width: int) -> str:
     return " ".join(f"{b:0{width}d}" for b in blocks)
 
 
-# membaca teks berisi angka (dipisah spasi atau koma) menjadi daftar bilangan bulat
+# membaca teks berisi angka (dipisah spasi / koma) menjadi daftar bilangan bulat
 def parse_blocks(text: str) -> list[int]:
     pieces = text.replace(",", " ").replace(";", " ").split()
     if not pieces:
