@@ -1,35 +1,38 @@
-# Mengelola menu, masukan, keluaran, dan demonstrasi RSA.
+# modul interface CLI/menu utama dari program RSA proyek MATDIS 2 .
 from dataclasses import dataclass
 
 import mathcore as mc
 import rsa
 
 
-# Menyimpan kunci yang sedang aktif.
+# menyimpan kunci RSA nya yang lagi aktif selama program berjalan.
 @dataclass
 class Session:
     key: rsa.RSAKey | None = None
 
 
-# Membaca satu baris masukan dari pengguna.
+# fungsi pembantu untuk membaca masukan/input teks dari pengguna.
 def ask(prompt: str) -> str:
     return input(prompt)
 
 
-# Mencetak beberapa baris keluaran.
+# fungsi pembantu untuk mencetak beberapa baris keluaran.
 def show(lines: list[str]) -> None:
+    # buat mengulang setiap baris data untuk dicetak
     for line in lines:
         print(line)
 
 
-# Menampilkan menu utama dan status kunci.
+# menampilkan menu utama dan informasi kunci yang sedang aktif.
 def show_menu(session: Session) -> None:
     print("=" * 50)
     print("  PROGRAM RSA - MATEMATIKA DISKRIT 2")
     print("=" * 50)
+    # mengecek apakah sudah ada kunci yang dibuat atau belum
     if session.key is None:
         print("Kunci aktif : belum ada")
     else:
+        # buat menampilkan modulus n dan eksponen e dari kunci aktifnya
         print(f"Kunci aktif : n = {session.key.n}, e = {session.key.e}")
     print("  1. Buat kunci RSA")
     print("  2. Enkripsi pesan")
@@ -39,36 +42,48 @@ def show_menu(session: Session) -> None:
     print("  0. Keluar")
 
 
-# Menampilkan rincian pasangan kunci.
+# menampilkan rincian pasangan kunci RSA.
 def show_key(key: rsa.RSAKey) -> None:
+    # akan menampilkan nilai p, q, n, phi, e, dan d
     print(f"p = {key.p}; q = {key.q}; n = {key.n}; phi(n) = {key.phi}")
     print(f"e = {key.e}; d = {key.d}")
     print(f"Kunci publik (n, e) = ({key.n}, {key.e})")
     print(f"Kunci privat (n, d) = ({key.n}, {key.d})")
 
 
-# Membuat kunci dari contoh kuliah, masukan manual, atau bilangan acak.
+# Membuat kunci baru sesuai pilihan metode yang tersedita
+# contoh pada program: kuliah, masukan manual, atau bilangan acak.
 def create_key(session: Session) -> None:
     print("  a. Contoh kuliah (43, 59, 13)")
     print("  b. Masukkan p, q, e")
     print("  c. Buat kunci acak (16/32/64/128 bit)")
     choice = ask("Pilih cara: ").strip().lower()
+    # buat milih cara pembuatan kuncinya, ada a, b, c
     if choice == "a":
+        # membuat kunci dengan nilai tetap bawaan program ini
         key = rsa.make_key(43, 59, 13)
     elif choice == "b":
+        # membuat kunci dari input angka p, q, dan e secara manual
         p, q = int(ask("Masukkan p: ")), int(ask("Masukkan q: "))
         raw_e = ask("Masukkan e (kosong untuk memilih acak): ").strip()
+        # kalau e nya kosong (tidak ditentukan oleh pengguna), program akan memilih nilai e secara acak
         key = rsa.make_key(p, q, int(raw_e) if raw_e else None)
     elif choice == "c":
+        # membuat kunci prima acak berdasarkan dari ukuran bit
         bits = int(ask("Panjang kunci (16/32/64/128): "))
+        # buat mastiin ukuran bit sesuai dengan daftar yang diperbolehkan
         if bits not in (16, 32, 64, 128):
             raise ValueError("Pilih panjang 16, 32, 64, atau 128 bit.")
         key = rsa.generate_key(bits)
     else:
+        # kalau inputnya pilihan tidak ada di opsi menu (a, b, atau c)
         raise ValueError("Pilihan pembuatan kunci tidak dikenal.")
+    # menyimpan kunci yang baru dibuat ke sesi
     session.key = key
     show_key(key)
+    # pilihan opsi untuk melihat proses pencarian nilai d atau tidak usah
     if ask("Tampilkan langkah mencari d? (y/n): ").strip().lower() == "y":
+        # diberi syarat untuk menampilkan langkahnya saja jika angka tidak terlalu panjang
         if key.n < 10**9:
             trace: list[str] = []
             mc.mod_inverse(key.e, key.phi, trace)
