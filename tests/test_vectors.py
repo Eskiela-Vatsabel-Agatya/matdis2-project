@@ -1,4 +1,4 @@
-# Uji otomatis (jalankan dengan: python -m unittest -v); di sini boleh memakai pow dan math.gcd sebagai pembanding.
+# uji otomatis (run pakai : python -m unittest -v); di sini boleh memakai pow dan math.gcd sebagai pembanding
 import math
 import os
 import random
@@ -11,7 +11,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KEY = rsa.make_key(43, 59, 13)
 
 
-# Contoh-contoh dari slide kuliah.
+# contoh contoh
 class TestLectureVectors(unittest.TestCase):
 
     def test_euclid_and_bezout(self):
@@ -33,7 +33,7 @@ class TestLectureVectors(unittest.TestCase):
         self.assertEqual(mc.mod_pow(1819, 13, 2537, log), 2081)
         for value in ("2068", "1779", "2081"):
             self.assertIn(value, "\n".join(log))
-        self.assertEqual(mc.mod_pow(7, 222, 11), 5)          # Contoh Fermat dari slide
+        self.assertEqual(mc.mod_pow(7, 222, 11), 5)          # contoh Fermat 
 
     def test_phi(self):
         self.assertEqual(mc.euler_phi_semiprime(43, 59), 2436)
@@ -61,7 +61,7 @@ class TestLectureVectors(unittest.TestCase):
         self.assertEqual(rsa.parse_blocks("0981, 0461\n0001"), [981, 461, 1])
 
 
-# Uji Fermat dibandingkan dengan saringan Eratosthenes.
+# uji Fermat dibandingkan dengan saringan Eratosthenes
 class TestPrimality(unittest.TestCase):
 
     def test_against_sieve(self):
@@ -81,11 +81,11 @@ class TestPrimality(unittest.TestCase):
 
     def test_known_primes(self):
         for p in (2 ** 127 - 1, 2 ** 61 - 1, 18446744073709551557):
-            self.assertTrue(all(pow(a, p - 1, p) == 1 for a in (2, 3, 5, 7)))   # Pembanding memakai pow bawaan Python
+            self.assertTrue(all(pow(a, p - 1, p) == 1 for a in (2, 3, 5, 7)))   # pembanding memakai pow bawaan Python
             self.assertTrue(mc.is_probable_prime(p), p)
 
 
-# Perbandingan acak dengan fungsi bawaan Python.
+# perbandingan acak dengan fungsi bawaan Python
 class TestOracles(unittest.TestCase):
 
     def test_random_cases(self):
@@ -95,12 +95,12 @@ class TestOracles(unittest.TestCase):
             a, c = random.randint(0, 10 ** 18), random.randint(0, 10 ** 18)
             g, s, t = mc.extended_gcd(a, c)
             self.assertEqual(mc.gcd(a, c), math.gcd(a, c))
-            self.assertEqual((g, s * a + t * c), (math.gcd(a, c), g))     # Memeriksa identitas Bezout
+            self.assertEqual((g, s * a + t * c), (math.gcd(a, c), g))     # memeriksa identitas Bezout
             if math.gcd(b, m) == 1:
                 self.assertEqual(mc.mod_inverse(b, m), pow(b, -1, m))
 
 
-# Kunci acak, round trip, dan masukan yang tidak valid.
+# kunci acak, round trip, dan input yang tidak valid
 class TestRoundTripAndNegative(unittest.TestCase):
 
     def test_round_trip(self):
@@ -131,7 +131,7 @@ class TestRoundTripAndNegative(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main()
 
-# Menguji menu CLI menggunakan masukan yang sudah ditentukan.
+# menguji menu CLI menggunakan input yang sudah ditentukan.
 class TestCLI(unittest.TestCase):
     def run_cli(self, answers):
         from contextlib import redirect_stdout
