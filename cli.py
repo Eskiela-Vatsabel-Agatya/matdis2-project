@@ -1,28 +1,28 @@
-# Mengelola menu, masukan, keluaran, dan demonstrasi RSA.
+# mengelola menu, input, output, dan demonstrasi RSA
 from dataclasses import dataclass
 
 import mathcore as mc
 import rsa
 
 
-# Menyimpan kunci yang sedang aktif.
+# menyimpan kunci yang sedang aktif
 @dataclass
 class Session:
     key: rsa.RSAKey | None = None
 
 
-# Membaca satu baris masukan dari pengguna.
+# membaca satu baris masukan dari user
 def ask(prompt: str) -> str:
     return input(prompt)
 
 
-# Mencetak beberapa baris keluaran.
+# menampilkan beberapa baris output
 def show(lines: list[str]) -> None:
     for line in lines:
         print(line)
 
 
-# Menampilkan menu utama dan status kunci.
+# menampilkan menu utama dan status kunci
 def show_menu(session: Session) -> None:
     print("=" * 50)
     print("  PROGRAM RSA - MATEMATIKA DISKRIT 2")
@@ -39,7 +39,7 @@ def show_menu(session: Session) -> None:
     print("  0. Keluar")
 
 
-# Menampilkan rincian pasangan kunci.
+# menampilkan rincian pasangan kunci
 def show_key(key: rsa.RSAKey) -> None:
     print(f"p = {key.p}; q = {key.q}; n = {key.n}; phi(n) = {key.phi}")
     print(f"e = {key.e}; d = {key.d}")
@@ -47,7 +47,7 @@ def show_key(key: rsa.RSAKey) -> None:
     print(f"Kunci privat (n, d) = ({key.n}, {key.d})")
 
 
-# Membuat kunci dari contoh kuliah, masukan manual, atau bilangan acak.
+# membuat kunci dari contoh kuliah, masukan manual, atau bilangan acak
 def create_key(session: Session) -> None:
     print("  a. Contoh kuliah (43, 59, 13)")
     print("  b. Masukkan p, q, e")
@@ -77,7 +77,7 @@ def create_key(session: Session) -> None:
             print("Langkah tidak ditampilkan untuk kunci sebesar ini.")
 
 
-# Mengenkripsi teks dan menampilkan blok sebelum dan sesudah enkripsi.
+# mengenkripsi teks dan menampilkan blok sebelum dan sesudah enkripsi
 def encrypt(session: Session) -> None:
     if session.key is None:
         print("Buat kunci terlebih dahulu (menu 1).")
@@ -100,7 +100,7 @@ def encrypt(session: Session) -> None:
         show(trace)
 
 
-# Mendekripsi blok angka dan mengubahnya menjadi huruf.
+# mendekripsi blok angka dan mengubahnya menjadi huruf
 def decrypt(session: Session) -> None:
     if session.key is None:
         print("Buat kunci terlebih dahulu (menu 1).")
@@ -111,7 +111,7 @@ def decrypt(session: Session) -> None:
     print(f"Pesan hasil dekripsi: {rsa.rosen_decode(plain, rsa.rosen_block_digits(session.key.n))}")
 
 
-# Menjalankan penandatanganan, verifikasi, atau simulasi perubahan tanda tangan.
+# menjalankan penandatanganan, verifikasi, / simulasi perubahan tanda tangan
 def signature(session: Session) -> None:
     if session.key is None:
         print("Buat kunci terlebih dahulu (menu 1).")
@@ -149,7 +149,7 @@ def signature(session: Session) -> None:
         raise ValueError("Pilihan tanda tangan tidak dikenal.")
 
 
-# Meminta bilangan dan menampilkan jejak algoritma teori bilangan.
+# meminta bilangan dan menampilkan jejak algoritma teori bilangan
 def tools_menu() -> None:
     print("  1. FPB (Euclid)")
     print("  2. Bezout dan invers modular")
@@ -180,7 +180,7 @@ def tools_menu() -> None:
         raise ValueError("Pilihan alat tidak dikenal.")
 
 
-# Menjalankan contoh deterministik untuk presentasi dan pemeriksaan.
+# menjalankan contoh deterministik untuk presentasi dan pemeriksaan
 def demo() -> None:
     key = rsa.make_key(43, 59, 13)
     print("=== PEMBUATAN KUNCI ===")
@@ -208,7 +208,7 @@ def demo() -> None:
     print(f"Verifikasi tanda tangan diubah: {rsa.verify_blocks(altered, key.e, key.n) != blocks}")
 
 
-# Memilih mode demo atau menjalankan menu interaktif.
+# memilih mode demo / menjalankan menu interaktif
 def run(args: list[str] | None = None) -> None:
     args = args or []
     if args == ["--demo"]:
