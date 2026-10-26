@@ -1,0 +1,27 @@
+test_bad_key_values_return_to_menu (tests.test_vectors.TestCLI.test_bad_key_values_return_to_menu) ... ok
+test_demo_is_deterministic (tests.test_vectors.TestCLI.test_demo_is_deterministic) ... ok
+test_eof_is_graceful (tests.test_vectors.TestCLI.test_eof_is_graceful) ... ok
+test_forbidden_program_imports (tests.test_vectors.TestCLI.test_forbidden_program_imports) ... ok
+test_invalid_inputs_and_no_key (tests.test_vectors.TestCLI.test_invalid_inputs_and_no_key) ... ok
+test_key_encrypt_decrypt_session (tests.test_vectors.TestCLI.test_key_encrypt_decrypt_session) ... ok
+test_signature_and_forgery (tests.test_vectors.TestCLI.test_signature_and_forgery) ... ok
+test_encrypt_stop_decrypt_help (tests.test_vectors.TestLectureVectors.test_encrypt_stop_decrypt_help) ... ok
+test_euclid_and_bezout (tests.test_vectors.TestLectureVectors.test_euclid_and_bezout) ... ok
+test_inverses (tests.test_vectors.TestLectureVectors.test_inverses) ... ok
+test_key_and_blocks (tests.test_vectors.TestLectureVectors.test_key_and_blocks) ... ok
+test_parse_blocks (tests.test_vectors.TestLectureVectors.test_parse_blocks) ... ok
+test_phi (tests.test_vectors.TestLectureVectors.test_phi) ... ok
+test_signature (tests.test_vectors.TestLectureVectors.test_signature) ... ok
+test_square_and_multiply (tests.test_vectors.TestLectureVectors.test_square_and_multiply) ... ok
+test_random_cases (tests.test_vectors.TestOracles.test_random_cases) ... ok
+test_against_sieve (tests.test_vectors.TestPrimality.test_against_sieve) ... ok
+test_known_primes (tests.test_vectors.TestPrimality.test_known_primes) ... ok
+test_pseudoprimes_are_rejected (tests.test_vectors.TestPrimality.test_pseudoprimes_are_rejected) ... ok
+test_negative (tests.test_vectors.TestRoundTripAndNegative.test_negative) ... ok
+test_no_forbidden_imports (tests.test_vectors.TestRoundTripAndNegative.test_no_forbidden_imports) ... ok
+test_round_trip (tests.test_vectors.TestRoundTripAndNegative.test_round_trip) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.758s
+
+OK

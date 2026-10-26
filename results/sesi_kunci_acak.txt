@@ -1,0 +1,12 @@
+=== KUNCI ACAK 64 BIT ===
+n memiliki 64 bit
+Pesan: RSA UJI
+Ciphertext: 04038407045442279036
+Hasil dekripsi: RSAUJIXXX
+Round trip berhasil: True
+=== KUNCI ACAK 128 BIT ===
+n memiliki 128 bit
+Pesan: RSA UJI
+Ciphertext: 004556965316399976197796293227779773533
+Hasil dekripsi: RSAUJIXXXXXXXXXXXXX
+Round trip berhasil: True

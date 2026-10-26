@@ -1,0 +1,40 @@
+==================================================
+  PROGRAM RSA - MATEMATIKA DISKRIT 2
+==================================================
+Kunci aktif : belum ada
+  1. Buat kunci RSA
+  2. Enkripsi pesan
+  3. Dekripsi pesan
+  4. Tanda tangan digital
+  5. Alat bantu: langkah-langkah algoritma
+  0. Keluar
+Pilih menu:   a. Contoh kuliah (43, 59, 13)
+  b. Masukkan p, q, e
+  c. Buat kunci acak (16/32/64/128 bit)
+Pilih cara: p = 43; q = 59; n = 2537; phi(n) = 2436
+e = 13; d = 937
+Kunci publik (n, e) = (2537, 13)
+Kunci privat (n, d) = (2537, 937)
+Tampilkan langkah mencari d? (y/n): ==================================================
+  PROGRAM RSA - MATEMATIKA DISKRIT 2
+==================================================
+Kunci aktif : n = 2537, e = 13
+  1. Buat kunci RSA
+  2. Enkripsi pesan
+  3. Dekripsi pesan
+  4. Tanda tangan digital
+  5. Alat bantu: langkah-langkah algoritma
+  0. Keluar
+Pilih menu: Masukkan blok ciphertext: Blok pesan: 0704 1115
+Pesan hasil dekripsi: HELP
+==================================================
+  PROGRAM RSA - MATEMATIKA DISKRIT 2
+==================================================
+Kunci aktif : n = 2537, e = 13
+  1. Buat kunci RSA
+  2. Enkripsi pesan
+  3. Dekripsi pesan
+  4. Tanda tangan digital
+  5. Alat bantu: langkah-langkah algoritma
+  0. Keluar
+Pilih menu: Program selesai.

@@ -1,0 +1,36 @@
+==================================================
+  PROGRAM RSA - MATEMATIKA DISKRIT 2
+==================================================
+Kunci aktif : belum ada
+  1. Buat kunci RSA
+  2. Enkripsi pesan
+  3. Dekripsi pesan
+  4. Tanda tangan digital
+  5. Alat bantu: langkah-langkah algoritma
+  0. Keluar
+Pilih menu: Pilihan menu tidak valid.
+==================================================
+  PROGRAM RSA - MATEMATIKA DISKRIT 2
+==================================================
+Kunci aktif : belum ada
+  1. Buat kunci RSA
+  2. Enkripsi pesan
+  3. Dekripsi pesan
+  4. Tanda tangan digital
+  5. Alat bantu: langkah-langkah algoritma
+  0. Keluar
+Pilih menu:   a. Contoh kuliah (43, 59, 13)
+  b. Masukkan p, q, e
+  c. Buat kunci acak (16/32/64/128 bit)
+Pilih cara: Masukkan p: Masukkan q: Masukkan e (kosong untuk memilih acak): Kesalahan: p = 15 bukan bilangan prima.
+==================================================
+  PROGRAM RSA - MATEMATIKA DISKRIT 2
+==================================================
+Kunci aktif : belum ada
+  1. Buat kunci RSA
+  2. Enkripsi pesan
+  3. Dekripsi pesan
+  4. Tanda tangan digital
+  5. Alat bantu: langkah-langkah algoritma
+  0. Keluar
+Pilih menu: Program selesai.

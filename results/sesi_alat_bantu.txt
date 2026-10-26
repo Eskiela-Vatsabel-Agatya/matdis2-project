@@ -1,0 +1,52 @@
+==================================================
+  PROGRAM RSA - MATEMATIKA DISKRIT 2
+==================================================
+Kunci aktif : belum ada
+  1. Buat kunci RSA
+  2. Enkripsi pesan
+  3. Dekripsi pesan
+  4. Tanda tangan digital
+  5. Alat bantu: langkah-langkah algoritma
+  0. Keluar
+Pilih menu:   1. FPB (Euclid)
+  2. Bezout dan invers modular
+  3. Perpangkatan modular
+  4. Uji prima Fermat
+Pilih alat: Masukkan a: Masukkan b: FPB = 1
+13 = 0*2436 + 13
+2436 = 187*13 + 5
+13 = 2*5 + 3
+5 = 1*3 + 2
+3 = 1*2 + 1
+2 = 2*1 + 0
+==================================================
+  PROGRAM RSA - MATEMATIKA DISKRIT 2
+==================================================
+Kunci aktif : belum ada
+  1. Buat kunci RSA
+  2. Enkripsi pesan
+  3. Dekripsi pesan
+  4. Tanda tangan digital
+  5. Alat bantu: langkah-langkah algoritma
+  0. Keluar
+Pilih menu:   1. FPB (Euclid)
+  2. Bezout dan invers modular
+  3. Perpangkatan modular
+  4. Uji prima Fermat
+Pilih alat: Masukkan basis: Masukkan eksponen: Masukkan modulus: Hasil = 2081
+1819^13 mod 2537,  eksponen biner = 1101
+  bit 1: kuadrat -> 1, kali 1819 -> 1819
+  bit 1: kuadrat -> 513, kali 1819 -> 2068
+  bit 0: kuadrat -> 1779 (kali dilewati)
+  bit 1: kuadrat -> 1202, kali 1819 -> 2081
+==================================================
+  PROGRAM RSA - MATEMATIKA DISKRIT 2
+==================================================
+Kunci aktif : belum ada
+  1. Buat kunci RSA
+  2. Enkripsi pesan
+  3. Dekripsi pesan
+  4. Tanda tangan digital
+  5. Alat bantu: langkah-langkah algoritma
+  0. Keluar
+Pilih menu: Program selesai.
