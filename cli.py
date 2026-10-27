@@ -5,25 +5,25 @@ import mathcore as mc
 import rsa
 
 
-# menyimpan kunci RSA nya yang lagi aktif selama program berjalan.
+# menyimpan kunci RSA nya yang lagi aktif selama program berjalan
 @dataclass
 class Session:
     key: rsa.RSAKey | None = None
 
 
-# fungsi pembantu untuk membaca masukan/input teks dari pengguna.
+# fungsi pembantu untuk membaca masukan/input teks dari pengguna
 def ask(prompt: str) -> str:
     return input(prompt)
 
 
-# fungsi pembantu untuk mencetak beberapa baris keluaran.
+# fungsi pembantu untuk mencetak beberapa baris output
 def show(lines: list[str]) -> None:
     # buat mengulang setiap baris data untuk dicetak
     for line in lines:
         print(line)
 
 
-# menampilkan menu utama dan informasi kunci yang sedang aktif.
+# menampilkan menu utama dan informasi kunci yang sedang aktif
 def show_menu(session: Session) -> None:
     print("=" * 50)
     print("  PROGRAM RSA - MATEMATIKA DISKRIT 2")
@@ -52,7 +52,7 @@ def show_key(key: rsa.RSAKey) -> None:
 
 
 # Membuat kunci baru sesuai pilihan metode yang tersedita
-# contoh pada program: kuliah, masukan manual, atau bilangan acak.
+# contoh pada program: kuliah, masukan manual, atau bilangan acak
 def create_key(session: Session) -> None:
     print("  a. Contoh kuliah (43, 59, 13)")
     print("  b. Masukkan p, q, e")

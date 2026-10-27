@@ -1,10 +1,10 @@
-# Menjalankan program melalui antarmuka baris perintah.
+# menjalankan program melalui antarmuka baris perintah.
 import sys
 
 from cli import run
 
 
-# Meneruskan argumen ke antarmuka program.
+# meneruskan argumen ke antarmuka program.
 def main() -> None:
     run(sys.argv[1:])
 

@@ -1,4 +1,4 @@
-# Menyediakan algoritma teori bilangan dari Euclid sampai uji prima Fermat
+# menyediakan algoritma teori bilangan dari Euclid sampai uji prima Fermat
 import secrets
 
 # Menetapkan bilangan prima kecil untuk pembagian percobaan sebelum uji Fermat
@@ -6,7 +6,7 @@ SMALL_PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
                 59, 61, 67, 71, 73, 79, 83, 89, 97]
 
 
-# Mencari FPB dengan Euclid Algorithm
+# mencari FPB dengan Euclid Algorithm
 def gcd(a: int, b: int, log: list | None = None) -> int:
     a, b = abs(a), abs(b)
     while b != 0:
@@ -17,7 +17,7 @@ def gcd(a: int, b: int, log: list | None = None) -> int:
     return a
 
 
-# Menghitung g, s, t dengan s*a + t*b = g (koefisien Bezout).
+# menghitung g, s, t dengan s*a + t*b = g (koefisien Bezout).
 def extended_gcd(a: int, b: int, log: list | None = None) -> tuple[int, int, int]:
     # Error jika bilangan yang diterima negatif
     if a < 0 or b < 0:
@@ -39,7 +39,7 @@ def extended_gcd(a: int, b: int, log: list | None = None) -> tuple[int, int, int
     return old_r, old_s, old_t
 
 
-# Mencari invers a modulo m (gcd(a, m) = 1)
+# mencari invers a modulo m (gcd(a, m) = 1)
 def mod_inverse(a: int, m: int, log: list | None = None) -> int:
     # Modulus kurang dari 2 untuk invers tidak terdefinisi/tidak ada, jadi error
     if m < 2:
@@ -51,7 +51,7 @@ def mod_inverse(a: int, m: int, log: list | None = None) -> int:
     return s % m
 
 
-# Menghitung base^exp mod mod dengan square-and-multiply, membaca bit eksponen dari kiri
+# menghitung base^exp mod mod dengan square-and-multiply, membaca bit eksponen dari kiri
 def mod_pow(base: int, exp: int, mod: int, log: list | None = None) -> int:
     # Pangkat tidak boleh negatif dan pembagi minimal 1
     if mod < 1:
@@ -60,7 +60,7 @@ def mod_pow(base: int, exp: int, mod: int, log: list | None = None) -> int:
         raise ValueError("Eksponen tidak boleh negatif.")
     result = 1 % mod
     base = base % mod
-    # Catat bentuk biner dari pangkat
+    # catat bentuk biner dari pangkat
     if log is not None:
         log.append(f"{base}^{exp} mod {mod},  eksponen biner = {bin(exp)[2:]}")
     for bit in bin(exp)[2:]:
@@ -75,7 +75,7 @@ def mod_pow(base: int, exp: int, mod: int, log: list | None = None) -> int:
     return result
 
 
-# Menguji prima dengan membagi dengan prima kecil, lalu menggunakan Fermat
+# menguji prima dengan membagi dengan prima kecil, lalu menggunakan Fermat
 def is_probable_prime(n: int, log: list | None = None) -> bool:
     # Angka di bawah 2 bukan prima
     if n < 2:
@@ -100,7 +100,7 @@ def is_probable_prime(n: int, log: list | None = None) -> bool:
     return True
 
 
-# Membuat bilangan prima acak dengan panjang dalam bit
+# membuat bilangan prima acak dengan panjang dalam bit
 def generate_prime(bits: int, top_two: bool = False) -> int:    #top_two=True untuk membuat dua bit teratas bernilai 1
     if bits < 8:
         raise ValueError("Panjang bit prima minimal 8.")
@@ -114,7 +114,7 @@ def generate_prime(bits: int, top_two: bool = False) -> int:    #top_two=True un
             return candidate
 
 
-# Menghitung phi(n) = (p-1)(q-1) untuk n = p*q.
+# menghitung phi(n) = (p-1)(q-1) untuk n = p*q.
 def euler_phi_semiprime(p: int, q: int) -> int:
     # Error jika nilai p dan q sama
     if p == q:
