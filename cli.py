@@ -52,7 +52,7 @@ def show_menu(session: Session) -> None:
     print("  3. Dekripsi pesan")
     print("  4. Tanda tangan digital")
     print("  5. Alat bantu: langkah-langkah algoritma")
-    print("  6. Benchmark lima metode")
+    print("  6. Benchmark dekripsi RSA biasa vs CRT")
     print("  0. Keluar")
 
 
@@ -253,16 +253,9 @@ def demo() -> None:
     print(f"Verifikasi tanda tangan diubah: {rsa.verify_blocks(altered, key.e, key.n) != blocks}")
 
 
-# menjalankan submenu perbandingan lima metode untuk keperluan evaluasi
+# menjalankan benchmark dekripsi RSA biasa dan CRT
 def benchmark_menu() -> None:
-    print("  1. Eksponensiasi modular")
-    print("  2. Pencarian invers modular")
-    print("  3. Uji primalitas")
-    print("  4. Dekripsi RSA biasa dan CRT")
-    print("  5. Eksponen publik")
-    print("  semua. Jalankan seluruh perbandingan")
-    choice = ask("Pilih perbandingan: ").strip().lower()
-    benchmark.run_bench("semua" if choice == "semua" else choice)
+    benchmark.run_bench()
 
 
 # memilih mode demo / menjalankan menu interaktif
@@ -274,11 +267,8 @@ def run(args: list[str] | None = None) -> None:
     if args == ["--bench"]:
         benchmark.run_bench()
         return
-    if args == ["--bench-cepat"]:
-        benchmark.run_bench(fast=True)
-        return
     if args:
-        print("Argumen tidak dikenal. Gunakan --demo, --bench, atau --bench-cepat.")
+        print("Argumen tidak dikenal. Gunakan --demo atau --bench.")
         return
     session = Session()
     try:
