@@ -1,6 +1,7 @@
 # mengelola menu, input, output, dan demonstrasi RSA
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
+import benchmark
 import mathcore as mc
 import rsa
 
@@ -9,6 +10,7 @@ import rsa
 @dataclass
 class Session:
     key: rsa.RSAKey | None = None
+    message_lengths: dict[tuple[int, int, tuple[int, ...]], set[int]] = field(default_factory=dict)
 
 
 # membaca satu baris masukan dari user
@@ -20,6 +22,20 @@ def ask(prompt: str) -> str:
 def show(lines: list[str]) -> None:
     for line in lines:
         print(line)
+
+
+# mengingat panjang pesan agar huruf pengisi X tidak dianggap sebagai isi teks
+def message_length_for(session: Session, key: rsa.RSAKey, blocks: list[int]) -> int | None:
+    lookup = (key.n, key.e, tuple(blocks))
+    known_lengths = session.message_lengths.get(lookup, set())
+    if len(known_lengths) == 1:
+        known_length = next(iter(known_lengths))
+        print(f"Panjang pesan asli dikenali: {known_length} huruf")
+        return known_length
+    if len(known_lengths) > 1:
+        print("Ciphertext ini pernah dipakai untuk beberapa panjang pesan; pilih panjang yang benar dari keluaran enkripsi.")
+    raw_length = ask("Panjang pesan asli dalam huruf (lihat keluaran enkripsi; kosong jika tidak tahu): ").strip()
+    return int(raw_length) if raw_length else None
 
 
 # menampilkan menu utama dan status kunci
@@ -36,6 +52,7 @@ def show_menu(session: Session) -> None:
     print("  3. Dekripsi pesan")
     print("  4. Tanda tangan digital")
     print("  5. Alat bantu: langkah-langkah algoritma")
+    print("  6. Benchmark lima metode")
     print("  0. Keluar")
 
 
@@ -92,6 +109,9 @@ def encrypt(session: Session) -> None:
     print(f"Lebar blok: {width} digit")
     print(f"Blok pesan: {rsa.format_blocks(blocks, width)}")
     print(f"Blok ciphertext: {rsa.format_blocks(cipher, len(str(key.n)))}")
+    message_length = len(clean)
+    session.message_lengths.setdefault((key.n, key.e, tuple(cipher)), set()).add(message_length)
+    print(f"Panjang pesan asli: {message_length} huruf")
     dropped = rsa.rosen_dropped_chars(text)
     if dropped:
         print(f"Karakter yang diabaikan: {dropped}")
@@ -116,8 +136,11 @@ def decrypt(session: Session) -> None:
     else:
         plain = rsa.decrypt_blocks(blocks, key.d, key.n)
     width = rsa.rosen_block_digits(key.n)
+    message_length = message_length_for(session, key, blocks)
     print(f"Blok pesan: {rsa.format_blocks(plain, width)}")
-    print(f"Pesan hasil dekripsi: {rsa.rosen_decode(plain, width)}")
+    print(f"Pesan hasil dekripsi: {rsa.rosen_decode(plain, width, message_length)}")
+    if message_length is None:
+        print("Catatan: tanpa panjang asli, huruf X pengisi mungkin masih terlihat di akhir pesan.")
 
 
 # menjalankan penandatanganan, verifikasi, / simulasi perubahan tanda tangan
@@ -132,24 +155,33 @@ def signature(session: Session) -> None:
     choice = ask("Pilih cara: ").strip().lower()
     width = rsa.rosen_block_digits(key.n)
     if choice == "a":
-        blocks, _ = rsa.rosen_encode(ask("Masukkan pesan: "), key.n)
+        text = ask("Masukkan pesan: ")
+        blocks, _ = rsa.rosen_encode(text, key.n)
         signed = rsa.sign_blocks(blocks, key.d, key.n)
+        message_length = len(rsa.rosen_clean_letters(text))
+        session.message_lengths.setdefault((key.n, key.e, tuple(signed)), set()).add(message_length)
         print(f"Blok pesan: {rsa.format_blocks(blocks, width)}")
         print(f"Tanda tangan: {rsa.format_blocks(signed, len(str(key.n)))}")
+        print(f"Panjang pesan asli: {message_length} huruf")
     elif choice == "b":
         signed = rsa.parse_blocks(ask("Masukkan blok tanda tangan: "))
         recovered = rsa.verify_blocks(signed, key.e, key.n)
-        print(f"Pesan terverifikasi: {rsa.rosen_decode(recovered, width)}")
+        message_length = message_length_for(session, key, signed)
+        print(f"Pesan terverifikasi: {rsa.rosen_decode(recovered, width, message_length)}")
+        if message_length is None:
+            print("Catatan: tanpa panjang asli, huruf X pengisi mungkin masih terlihat di akhir pesan.")
     elif choice == "c":
-        blocks, _ = rsa.rosen_encode(ask("Masukkan pesan: "), key.n)
+        text = ask("Masukkan pesan: ")
+        blocks, _ = rsa.rosen_encode(text, key.n)
         signed = rsa.sign_blocks(blocks, key.d, key.n)
+        message_length = len(rsa.rosen_clean_letters(text))
         altered = signed[:]
         altered[0] = altered[0] + 1 if altered[0] % 10 != 9 else altered[0] - 1
         recovered = rsa.verify_blocks(altered, key.e, key.n)
         print(f"Tanda tangan asli: {rsa.format_blocks(signed, len(str(key.n)))}")
         print(f"Tanda tangan diubah: {rsa.format_blocks(altered, len(str(key.n)))}")
         try:
-            result = rsa.rosen_decode(recovered, width)
+            result = rsa.rosen_decode(recovered, width, message_length)
         except ValueError:
             result = "hasil bukan pesan huruf yang valid"
         print(f"Hasil verifikasi: {result}")
@@ -221,14 +253,32 @@ def demo() -> None:
     print(f"Verifikasi tanda tangan diubah: {rsa.verify_blocks(altered, key.e, key.n) != blocks}")
 
 
+# menjalankan submenu perbandingan lima metode untuk keperluan evaluasi
+def benchmark_menu() -> None:
+    print("  1. Eksponensiasi modular")
+    print("  2. Pencarian invers modular")
+    print("  3. Uji primalitas")
+    print("  4. Dekripsi RSA biasa dan CRT")
+    print("  5. Eksponen publik")
+    print("  semua. Jalankan seluruh perbandingan")
+    choice = ask("Pilih perbandingan: ").strip().lower()
+    benchmark.run_bench("semua" if choice == "semua" else choice)
+
+
 # memilih mode demo / menjalankan menu interaktif
 def run(args: list[str] | None = None) -> None:
     args = args or []
     if args == ["--demo"]:
         demo()
         return
+    if args == ["--bench"]:
+        benchmark.run_bench()
+        return
+    if args == ["--bench-cepat"]:
+        benchmark.run_bench(fast=True)
+        return
     if args:
-        print("Argumen tidak dikenal. Gunakan --demo untuk demonstrasi.")
+        print("Argumen tidak dikenal. Gunakan --demo, --bench, atau --bench-cepat.")
         return
     session = Session()
     try:
@@ -241,7 +291,7 @@ def run(args: list[str] | None = None) -> None:
                     return
                 actions = {"1": lambda: create_key(session), "2": lambda: encrypt(session),
                            "3": lambda: decrypt(session), "4": lambda: signature(session),
-                           "5": tools_menu}
+                           "5": tools_menu, "6": benchmark_menu}
                 if choice not in actions:
                     print("Pilihan menu tidak valid.")
                 else:

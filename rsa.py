@@ -99,8 +99,8 @@ def rosen_encode(text: str, n: int) -> tuple[list[int], int]:
     return [int(digits[i:i + width]) for i in range(0, len(digits), width)], width
 
 
-# kebalikan rosen_encode : blok angka dikembalikan menjadi huruf
-def rosen_decode(blocks: list[int], width: int) -> str:
+# kebalikan rosen_encode; panjang asli membuang padding tanpa menghapus X asli
+def rosen_decode(blocks: list[int], width: int, message_length: int | None = None) -> str:
     digits = ""
     for block in blocks:
         if block < 0 or block >= 10 ** width:
@@ -112,6 +112,13 @@ def rosen_decode(blocks: list[int], width: int) -> str:
         if value > 25:
             raise ValueError("Hasil bukan pesan huruf yang valid (kunci salah atau data rusak).")
         letters += chr(ord("A") + value)
+    if message_length is not None:
+        if not 0 <= message_length <= len(letters):
+            raise ValueError(f"Panjang pesan harus berada pada 0 sampai {len(letters)} huruf.")
+        padding = letters[message_length:]
+        if any(char != "X" for char in padding):
+            raise ValueError("Panjang pesan tidak cocok dengan padding X pada blok hasil dekripsi.")
+        letters = letters[:message_length]
     return letters
 
 
@@ -170,12 +177,13 @@ def encrypt_text(text: str, pub: tuple[int, int],
 
 
 # mendekripsi blok ciphertext, lalu mengubahnya kembali menjadi teks
-def decrypt_text(blocks: list[int], key: RSAKey, log: list | None = None, *, use_crt: bool = False) -> str:
+def decrypt_text(blocks: list[int], key: RSAKey, log: list | None = None, *, use_crt: bool = False,
+                 message_length: int | None = None) -> str:
     if use_crt:
         plain = decrypt_blocks_crt(blocks, key, log)
     else:
         plain = decrypt_blocks(blocks, key.d, key.n, log)
-    return rosen_decode(plain, rosen_block_digits(key.n))
+    return rosen_decode(plain, rosen_block_digits(key.n), message_length)
 
 
 # menyiapkan fungsi pemformatan blok
