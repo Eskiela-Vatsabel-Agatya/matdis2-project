@@ -45,6 +45,7 @@ def show_key(key: rsa.RSAKey) -> None:
     print(f"e = {key.e}; d = {key.d}")
     print(f"Kunci publik (n, e) = ({key.n}, {key.e})")
     print(f"Kunci privat (n, d) = ({key.n}, {key.d})")
+    print(f"dp = {key.dp}; dq = {key.dq}; q_inv = {key.q_inv}")
 
 
 # membuat kunci dari contoh kuliah, masukan manual, atau bilangan acak
@@ -100,15 +101,23 @@ def encrypt(session: Session) -> None:
         show(trace)
 
 
-# mendekripsi blok angka dan mengubahnya menjadi huruf
+# mendekripsi blok angka dengan metode standar atau CRT
 def decrypt(session: Session) -> None:
     if session.key is None:
         print("Buat kunci terlebih dahulu (menu 1).")
         return
+    key = session.key
     blocks = rsa.parse_blocks(ask("Masukkan blok ciphertext: "))
-    plain = rsa.decrypt_blocks(blocks, session.key.d, session.key.n)
-    print(f"Blok pesan: {rsa.format_blocks(plain, rsa.rosen_block_digits(session.key.n))}")
-    print(f"Pesan hasil dekripsi: {rsa.rosen_decode(plain, rsa.rosen_block_digits(session.key.n))}")
+    use_crt = ask("Gunakan CRT? (y/n): ").strip().lower() == "y"
+    trace: list[str] = []
+    if use_crt:
+        plain = rsa.decrypt_blocks_crt(blocks, key, trace)
+        show(trace)
+    else:
+        plain = rsa.decrypt_blocks(blocks, key.d, key.n)
+    width = rsa.rosen_block_digits(key.n)
+    print(f"Blok pesan: {rsa.format_blocks(plain, width)}")
+    print(f"Pesan hasil dekripsi: {rsa.rosen_decode(plain, width)}")
 
 
 # menjalankan penandatanganan, verifikasi, / simulasi perubahan tanda tangan
@@ -197,6 +206,10 @@ def demo() -> None:
     print(f"Ciphertext: {rsa.format_blocks(cipher, len(str(key.n)))}")
     print("=== DEKRIPSI HELP ===")
     print(f"0981 0461 -> {rsa.decrypt_text([981, 461], key)}")
+    print("=== DEKRIPSI CRT ===")
+    crt_trace: list[str] = []
+    print(f"0981 0461 -> {rsa.decrypt_text([981, 461], key, crt_trace, use_crt=True)}")
+    show(crt_trace)
     print("=== TANDA TANGAN ===")
     blocks, _ = rsa.rosen_encode("MEET AT NOON", key.n)
     signed = rsa.sign_blocks(blocks, key.d, key.n)

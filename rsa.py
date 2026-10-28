@@ -1,5 +1,4 @@
 # menjelaskan bahwa RSA buku teks ini tanpa padding dan hanya untuk pembelajaran
-import secrets
 from dataclasses import dataclass
 
 from mathcore import gcd, mod_inverse, mod_pow, is_probable_prime, generate_prime, euler_phi_semiprime
@@ -14,18 +13,24 @@ class RSAKey:
     phi: int
     e: int
     d: int
+    dp: int
+    dq: int
+    q_inv: int
 
 
 # menyiapkan fungsi pembuatan kunci
 
-# memilih e secara acak yang relatif prima dengan phi
+# memilih eksponen publik kecil yang relatif prima dengan phi
 def _choose_e(phi: int) -> int:
     if phi <= 3:
         raise ValueError("phi(n) terlalu kecil untuk memilih e.")
-    while True:
-        e = 3 + secrets.randbelow(phi - 3)
+    for e in (65537, 257, 17, 5, 3):
+        if e < phi and gcd(e, phi) == 1:
+            return e
+    for e in range(3, phi, 2):
         if gcd(e, phi) == 1:
             return e
+    raise ValueError("Tidak ditemukan eksponen publik yang valid.")
 
 
 # membuat kunci dari dua prima p dan q; e dipilih acak jika tidak diberikan
@@ -41,7 +46,11 @@ def make_key(p: int, q: int, e: int | None = None) -> RSAKey:
         raise ValueError(f"e harus memenuhi 1 < e < phi(n) = {phi}.")
     if gcd(e, phi) != 1:
         raise ValueError(f"e = {e} tidak relatif prima dengan phi(n) = {phi}.")
-    return RSAKey(p=p, q=q, n=p * q, phi=phi, e=e, d=mod_inverse(e, phi))
+    d = mod_inverse(e, phi)
+    dp = d % (p - 1)
+    dq = d % (q - 1)
+    q_inv = mod_inverse(q, p)
+    return RSAKey(p=p, q=q, n=p * q, phi=phi, e=e, d=d, dp=dp, dq=dq, q_inv=q_inv)
 
 
 # membuat kunci acak dengan modulus n sepanjang bits bit (min 16)
@@ -127,6 +136,21 @@ def decrypt_blocks(blocks: list[int], d: int, n: int, log: list | None = None) -
     return [mod_pow(c, d, n, log) for c in blocks]
 
 
+# mendekripsi tiap blok dengan teorema sisa Tiongkok
+def decrypt_blocks_crt(blocks: list[int], key: RSAKey, log: list | None = None) -> list[int]:
+    _check_range(blocks, key.n)
+    results = []
+    for c in blocks:
+        m_p = mod_pow(c % key.p, key.dp, key.p)
+        m_q = mod_pow(c % key.q, key.dq, key.q)
+        h = (key.q_inv * (m_p - m_q)) % key.p
+        message = m_q + h * key.q
+        results.append(message)
+        if log is not None:
+            log.append(f"C={c}: m_p={m_p}, m_q={m_q}, h={h}, m={message}")
+    return results
+
+
 # tanda tangan versi kuliah : S = x^d mod n dengan kunci privat (tanpa hash)
 def sign_blocks(blocks: list[int], d: int, n: int) -> list[int]:
     return decrypt_blocks(blocks, d, n)
@@ -146,8 +170,11 @@ def encrypt_text(text: str, pub: tuple[int, int],
 
 
 # mendekripsi blok ciphertext, lalu mengubahnya kembali menjadi teks
-def decrypt_text(blocks: list[int], key: RSAKey, log: list | None = None) -> str:
-    plain = decrypt_blocks(blocks, key.d, key.n, log)
+def decrypt_text(blocks: list[int], key: RSAKey, log: list | None = None, *, use_crt: bool = False) -> str:
+    if use_crt:
+        plain = decrypt_blocks_crt(blocks, key, log)
+    else:
+        plain = decrypt_blocks(blocks, key.d, key.n, log)
     return rosen_decode(plain, rosen_block_digits(key.n))
 
 
