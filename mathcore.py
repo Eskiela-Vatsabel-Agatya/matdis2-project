@@ -16,16 +16,18 @@ def gcd(a: int, b: int, log: list | None = None) -> int:
         a, b = b, r
     return a
 
-
 # menerapkan Euclid diperluas untuk menghasilkan identitas Bezout s*a + t*b = g
 def extended_gcd(a: int, b: int, log: list | None = None) -> tuple[int, int, int]:
     if a < 0 or b < 0:
         raise ValueError("extended_gcd hanya menerima bilangan tak negatif.")
+    
     old_r, r = a, b      # sisa pembagian
     old_s, s = 1, 0      # koefisien untuk a
     old_t, t = 0, 1      # koefisien untuk b
+    
     if log is not None:
-        log.append("Tabel Euclid diperluas  (q, r, s, t):")
+        log.append("Tabel Euclid diperluas (q, r, s, t):")
+        
     while r != 0:
         q = old_r // r
         old_r, r = r, old_r - q * r
@@ -33,10 +35,11 @@ def extended_gcd(a: int, b: int, log: list | None = None) -> tuple[int, int, int
         old_t, t = t, old_t - q * t
         if log is not None:
             log.append(f"  q={q:<6} r={r:<8} s={s:<8} t={t}")
+            
     if log is not None:
         log.append(f"Hasil: {old_s}*{a} + {old_t}*{b} = {old_r}")
+        
     return old_r, old_s, old_t
-
 
 # mencari invers a modulo m; inversnya hanya ada jika gcd(a, m) = 1
 def mod_inverse(a: int, m: int, log: list | None = None) -> int:
@@ -54,20 +57,23 @@ def mod_pow(base: int, exp: int, mod: int, log: list | None = None) -> int:
         raise ValueError("Modulus harus bilangan bulat positif.")
     if exp < 0:
         raise ValueError("Eksponen tidak boleh negatif.")
+    
     result = 1 % mod
     base = base % mod
+    
     if log is not None:
-        log.append(f"{base}^{exp} mod {mod},  eksponen biner = {bin(exp)[2:]}")
+        log.append(f"{base}^{exp} mod {mod}, eksponen biner = {bin(exp)[2:]}")
+        
     for bit in bin(exp)[2:]:
-        squared = (result * result) % mod          # kuadratkan hasil sebelumnya
+        squared = (result * result) % mod  # kuadratkan hasil sebelumnya
         result = squared
         if bit == "1":
-            result = (squared * base) % mod        # kalikan dengan base jika bitnya 1
+            result = (squared * base) % mod  # kalikan dengan base jika bitnya 1
         if log is not None:
             kali = f", kali {base} -> {result}" if bit == "1" else " (kali dilewati)"
             log.append(f"  bit {bit}: kuadrat -> {squared}{kali}")
+            
     return result
-
 
 # menguji prima dengan Fermat; bilangan Carmichael seperti 3828001 dapat lolos
 def is_probable_prime(n: int, log: list | None = None) -> bool:
@@ -88,7 +94,6 @@ def is_probable_prime(n: int, log: list | None = None) -> bool:
     if log is not None:
         log.append(f"{n} lolos uji Fermat (basis 2, 3, 5, 7, 11) -> kemungkinan prima")
     return True
-
 
 # membangkitkan prima acak sepanjang bits bit; top_two=True membuat dua bit teratas bernilai 1
 def generate_prime(bits: int, top_two: bool = False) -> int:
