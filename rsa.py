@@ -22,11 +22,13 @@ class RSAKey:
 def _choose_e(phi: int) -> int:
     if phi <= 3:
         raise ValueError("phi(n) terlalu kecil untuk memilih e.")
-    while True:
-        e = 3 + secrets.randbelow(phi - 3)
+    for e in (65537, 257, 17, 5, 3):
+        if e < phi and gcd(e, phi) == 1:
+            return e
+    for e in range(3, phi, 2):
         if gcd(e, phi) == 1:
             return e
-
+    raise ValueError("Tidak ditemukan eksponen publik yang valid.")
 
 # membuat kunci dari dua prima p dan q; e dipilih acak jika tidak diberikan
 def make_key(p: int, q: int, e: int | None = None) -> RSAKey:
@@ -89,7 +91,6 @@ def rosen_encode(text: str, n: int) -> tuple[list[int], int]:
         digits += "23"                       # isi dengan huruf X (23) sampai panjangnya sesuai
     return [int(digits[i:i + width]) for i in range(0, len(digits), width)], width
 
-
 # kebalikan rosen_encode : blok angka dikembalikan menjadi huruf
 def rosen_decode(blocks: list[int], width: int) -> str:
     digits = ""
@@ -119,18 +120,31 @@ def _check_range(blocks: list[int], n: int) -> None:
 def encrypt_blocks(blocks: list[int], e: int, n: int, log: list | None = None) -> list[int]:
     _check_range(blocks, n)
     return [mod_pow(m, e, n, log) for m in blocks]
-
+x
 
 # mendekripsi tiap blok dengan M = C^d mod n
 def decrypt_blocks(blocks: list[int], d: int, n: int, log: list | None = None) -> list[int]:
     _check_range(blocks, n)
     return [mod_pow(c, d, n, log) for c in blocks]
 
+# mendekripsi tiap blok dengan teorema sisa Chinese
+def decrypt_blocks_crt(blocks: list[int], key: RSAKey, log: list | None = None) -> list[int]:
+    _check_range(blocks, key.n)
+    results = []
+    for c in blocks:
+        m_p = mod_pow(c % key.p, key.dp, key.p)
+        m_q = mod_pow(c % key.q, key.dq, key.q)
+        h = (key.q_inv * (m_p - m_q)) % key.p
+        message = m_q + h * key.q
+        results.append(message)
+        if log is not None:
+            log.append(f"C={c}: m_p={m_p}, m_q={m_q}, h={h}, m={message}")
+    return results
+
 
 # tanda tangan versi kuliah : S = x^d mod n dengan kunci privat (tanpa hash)
 def sign_blocks(blocks: list[int], d: int, n: int) -> list[int]:
     return decrypt_blocks(blocks, d, n)
-
 
 # verifikasi tanda tangan : x = S^e mod n dengan kunci publik
 def verify_blocks(blocks: list[int], e: int, n: int) -> list[int]:
