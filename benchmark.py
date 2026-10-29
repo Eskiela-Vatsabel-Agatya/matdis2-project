@@ -7,13 +7,12 @@ import rsa
 KEY_SIZES = [128, 256, 512, 1024]
 N_BLOCKS = 20
 
-
+# mengukur rata-rata waktu dekripsi per blok cipherteks dalam satuan milidetik (ms)
 def average_ms(decrypt, ciphertexts):
     start = time.perf_counter()
     plaintexts = decrypt(ciphertexts)
     elapsed = time.perf_counter() - start
     return elapsed * 1000 / len(ciphertexts), plaintexts
-
 
 def run_bench():
     print(f"{'Ukuran':>9} | {'RSA biasa (ms)':>14} | {'RSA-CRT (ms)':>12} | {'Speedup':>7}")
